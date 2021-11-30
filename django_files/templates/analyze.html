@@ -1,0 +1,159 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+    Analyze
+{% endblock %}
+
+{% block main %}
+<div>
+<!-- --------------------------------- SELECTION FORM ------------------------------------- -->    
+    <div class="selectbanner" >
+        SELECT:
+    </div>
+    <hr>
+    <div id="sensorselection_ana">
+        <form action="analyze" method="POST">
+            {% csrf_token %}
+            <label for="sensorset_ana">Select sensorset:</label>
+            <select autofocus name="sensorset_ana" id="sensorset_ana" required>
+                <option value="" disabled selected>select sensorset</option>
+                {% for sensor in sensors %}
+                <option name="{{sensor.id}}" value="{{sensor.id}}">{{sensor.name}}</option>
+                {% endfor %}
+            </select>
+
+            <label for="date_ini">Start Date:</label>
+            <input type="date" id="date_ini" name="date_ini" placeholder="AAAA-MM-DD">
+
+            <label for="date_fin">End Date:</label>
+            <input type="date" id="date_fin" name="date_fin" placeholder="AAAA-MM-DD">
+
+            <input type="submit" name="submit" value="SELECT">
+        </form>
+    </div>
+    <hr>
+<!-- ---------------------------------ANALYSIS REPORT ------------------------------------- --> 
+    {{message}}
+    <div id="report">    
+            {% if chart %}
+                <!-- --------   Print REPORT ------------ --> 
+                <input type="button" value="Print Report" onclick="printDiv()">
+                <!-- --------   data for selected sensor ------------ -->
+                <p>
+                    {% for key, values in date.items %}
+                    {{key}} : {{values}},
+                    {% endfor %}  
+                </p> 
+                <table>
+                    {% for sensor in sensors %}
+                        {% if sensor.id == sens_id %}
+                        <tr><td class="tabsenstag"> Name: </td> <td class="tabsensval"> {{sensor.name}} </td></tr>
+                        <tr><td class="tabsenstag"> Location: </td> <td class="tabsensval"> {{sensor.location}} </td></tr> 
+                        <tr><td class="tabsenstag"> Plant: </td> <td class="tabsensval"> {{sensor.plant}} </td></tr>  
+                        {% endif %}
+                    {% endfor %}
+                </table>
+                <p></p>
+                <hr>
+                <!-- --------   Statistical report ------------ --> 
+                <div id="results_ana">
+                    <table id="tableres">
+                        <tr>
+                            <th style="text-align: left;"></th>
+                            <th class="tabletag_ana">Temp (&#8451;)</th>
+                            <th class="tabletag_ana">Humid (%)</th>
+                            <th class="tabletag_ana">Soil Moist (%)</th>
+                            <th class="tabletag_ana">Vis Light (lm)</th>
+                            <th class="tabletag_ana">IR (lm)</th>
+                            <th class="tabletag_ana">UV (UVI)</th>
+                        </tr>
+                        <tr>
+                            <td class="tabletag_ana">Average</td>
+                        {% for key, values in averages.items%}  
+                            <td class="tablevalue_ana">{{ values }} </td>                      
+                        {% endfor %}
+                        </tr>
+                        <tr>
+                            <td class="tabletag_ana">Max val</td>
+                        {% for key, values in maxs.items%}  
+                            <td class="tablevalue_ana">{{ values }} </td>                      
+                        {% endfor %}
+                        </tr>
+                        <tr>
+                            <td class="tabletag_ana">Min val</td>
+                        {% for key, values in mins.items%}  
+                            <td class="tablevalue_ana">{{ values }} </td>                      
+                        {% endfor %}
+                        </tr>
+                        <tr>
+                            <td class="tabletag_ana">Std dev</td>
+                        {% for key, values in stdevs.items%}  
+                            <td class="tablevalue_ana">{{ values }} </td>                      
+                        {% endfor %}
+                        </tr>   
+                    </table>
+                </div>
+                <hr>
+                <!-- --------   Graphic report ------------ -->
+                <img class='graph' src="data:image/png;base64, {{chart|safe}}">
+                <hr>
+            {% endif %}
+        <br>
+    </div>
+</div>
+
+<style>
+    #sensorselection_ana, #report {
+        font-size: 12px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+
+      .graph {
+        width: 100vw;
+        max-width: 800px;
+      }
+
+      #tableres {
+        width: 100vw;
+        max-width: 800px;
+        table-layout: auto;
+      }
+
+      .tabletag_ana {
+        background-color:rgb(107, 123, 115, 0.5); 
+        color: rgb(46, 52, 48);
+        padding:5px;
+        width:100vw;
+        text-align:center;
+        font-size: 12px; 
+      }
+
+      .tablevalue_ana {
+        background-color:rgb(212, 215, 212, 0.5); 
+        color: rgb(66, 74, 70);
+        padding:5px;
+        width:auto;
+        text-align:center;
+        font-weight:normal;
+        font-size: 12px;
+        white-space:pre;
+      }
+</style>
+
+
+<script>
+    //-- --------   Print function ------------ 
+    function printDiv() {
+        var divContents = document.getElementById("report").innerHTML;
+        var a = window.open('', '', 'height=500, width=500');
+        a.document.write('<html>');
+        a.document.write('<body >');
+        a.document.write(divContents);
+        a.document.write('</body></html>');
+        a.document.close();
+        a.print();
+    }
+</script>
+
+
+{% endblock %}

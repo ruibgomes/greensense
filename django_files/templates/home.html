@@ -1,0 +1,47 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block main %}
+
+<!-- ------------------------------------- Sensor selection ------------------------------------------------ -->
+
+<div class="divbody">
+
+    <div class="selectbanner" >
+        SELECT SENSORSET:
+    </div>
+    <div id="sensorselection">
+        <form action="showresult" method="POST">
+            {% csrf_token %}
+            <select autofocus name="sensorset" id="sensorset" required>
+                <option value="" disabled selected>select sensorset</option>
+                {% for sensor in sensors %}
+                <option name="{{sensor.name}}" value="{{sensor.ip_address}}">{{sensor.name}}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" name="submit" value="SELECT">
+        </form>
+    </div> 
+    
+    <!-- ------------------------------------- Sensors avalible ------------------------------------------------ -->
+    <p id="avalbanner">SENSORS AVALIBLE:</p>
+    <hr>
+    <div id="listavaliable">
+            {% for sensor in sensors %}
+                {% if sensor.active %}
+                <table> 
+                <tr><td class="tabsenstag"> Name: </td> <td class="tabsensval"> {{sensor.name}} </td></tr>
+                <tr><td class="tabsenstag"> Location: </td> <td class="tabsensval"> {{sensor.location}} </td></tr> 
+                <tr><td class="tabsenstag"> Plant: </td> <td class="tabsensval"> {{sensor.plant}} </td></tr> 
+                </table>
+                <hr>
+                {% endif %}
+            {% endfor %}
+    </div>
+    
+</div>
+
+{% endblock %}

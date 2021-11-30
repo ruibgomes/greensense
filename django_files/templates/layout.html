@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+        
+        <title>{% block title %} GREEN SENSE: {% endblock %}</title>
+        
+        <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <!-- ------------- JS for navbar ------------------- -->
+        <script>
+          
+          
+        </script>
+  
+    </head>
+
+    <!-- ------------------------------------- NAVBAR -------------------------------------------------- -->
+    <!-- Load an icon library to show a hamburger menu (bars) on small screens -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <div class="topnav" id="myTopnav">
+      {% url 'home' as url %}
+      <a href="/" class="btn {% if request.path == url %}active{% endif %}">Dashboard</a>
+      {% url 'analyze' as url %}
+      <a href="/analyze" class="btn {% if request.path == url %}active{% endif %}">Analyze</a>
+      {% url 'info' as url %}
+      <a href="#" class="btn {% if request.path == url %}active{% endif %}">Info</a>
+      {% url 'admin' as url %}
+      <a href="/admin" class="btn {% if request.path == url %}active{% endif %}">Admin</a>
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+    <div id="nav-logo"><img id="logo" src="/static/images/gslogo.png" alt="greensense"  height="35px"></div>
+
+    <script>
+      
+      var x = document.getElementById("myTopnav");
+      function myFunction() {
+        
+        if (x.className === "topnav") {
+          x.className += " responsive";
+        } else {
+          x.className = "topnav";
+        }
+      }
+      </script>
+
+        <!--------------------------MAIN BLOCK ------------------------------------------------>        
+        
+        <main class="main">
+          <div class="block">
+            {% block main %}
+            {% endblock %}
+          </div>
+                         
+        </main>
+        
+        <!------------------------------------------------------------------------------------->  
+
+        <footer class="footer">
+            <p class="footer">
+              GREENsense 2021
+            </p> 
+        </footer>
+
+
+    </body>
+
+
+</html>

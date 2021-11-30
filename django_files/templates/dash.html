@@ -1,0 +1,64 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block main %}
+
+<!-- ------------------------------------- Sensor identifyer ------------------------------------------------ -->
+<div class="divbody" >
+    <div class="selectbanner">
+        SELECTED SENSOR:
+    </div>
+    <div style="background-color:rgb(165, 177, 171, 0.4); padding-left: 10px; margin-top: 0px; margin-bottom:0px;">
+        <table>
+            {% for sensor in sensors %}
+                {% if sensor.ip_address == sense_ip %}
+                <tr><td class="tabsenstag"> Name: </td> <td class="tabsensval"> {{sensor.name}} </td></tr>
+                <tr><td class="tabsenstag"> Location: </td> <td class="tabsensval"> {{sensor.location}} </td></tr> 
+                <tr><td class="tabsenstag"> Plant: </td> <td class="tabsensval"> {{sensor.plant}} </td></tr>  
+                    
+                {% endif %}
+            {% endfor %}
+        </table> 
+    </div>
+
+<!-- ------------------------------------- Sensor data results ------------------------------------------------ -->    
+    <div id="results">
+        <p>DATA @: {{ timestp }} :</p>
+        <table id="tableres">
+            <tr><th style="text-align: left;">Air parameters:</th></tr>
+            <tr><td class="tabletag">Temperature</td><td class="tablevalue">{{ data.Temp }} </td><td class=tableunit>&#8451;</td></tr> 
+            <tr><td class="tabletag">Humidity</td><td class="tablevalue">{{ data.Humid }} </td><td class=tableunit>%</td></tr>
+            <tr><th style="text-align: left;">Soil parameters:</th></tr>
+            <tr><td class="tabletag">Soil Moisture</td><td class="tablevalue">{{ data.SoilM }} </td><td class=tableunit>%</td></tr>
+            <tr><th style="text-align: left;">Light parameters:</th></tr>
+            <tr><td class="tabletag">Visible Light</td><td class="tablevalue">{{ data.Vis }} </td><td class=tableunit>lm</td> </tr>
+            <tr><td class="tabletag">IR Light</td><td class="tablevalue">{{ data.IR }} </td><td class=tableunit>lm</td></tr>
+            <tr><td class="tabletag">UV Light</td><td class="tablevalue">{{ data.UV }}</td><td class=tableunit> IUV</td></tr>
+           
+            
+        </table>
+    </div>
+    
+    
+<!-- ------------------------------------- Back and refresh buttons ------------------------------------------------ -->    
+    <div id="buttons" style="background-color:rgb(187, 215, 201, 0.3); padding: 5px;">
+        <form method="get" action="/">
+            <button type="submit">BACK TO SENSOR SET SELECTION</button>
+        </form>
+        <form action="showresult" method="POST">
+            {% csrf_token %}
+            <input type="text" default="sense_ip" name="sensorset" id="sensorset" hidden>
+            <input type="submit" name="refresh" value="REFRESH DATA">
+        </form>
+        <script type="text/javascript">
+            var sensorset = '{{sense_ip}}'
+            document.getElementById('sensorset').value = sensorset;
+        </script>
+    </div> 
+</div>
+
+
+{% endblock %}
